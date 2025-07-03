@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' apply true
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.apache.kafka:connect-api'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.prometheus:simpleclient'
+    implementation 'io.prometheus:simpleclient_httpserver'
+
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.testcontainers:kafka'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:testcontainers'
+    testImplementation 'org.assertj:assertj-core'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+shadowJar {
+    archiveFileName = "kafka-connect-prometheus-1.0.0-all.jar"
+    manifest {
+        attributes(
+                "Implementation-Title": "Prometheus Sink Connector",
+                "Implementation-Version": "1.0.0",
+                "Main-Class": "ru.practicum.connector.PrometheusSinkConnector",
+                "Kafka-Connect-Class": "ru.practicum.connector.PrometheusSinkConnector"
+        )
+    }
+
+    dependencies {
+        dependencies {
+            exclude(dependency('org.apache.kafka:connect-api'))
+            exclude(dependency('org.apache.kafka:kafka-clients'))
+            exclude(dependency('org.slf4j::'))
+        }
+    }
+}
