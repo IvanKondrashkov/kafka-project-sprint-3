@@ -1,0 +1,14 @@
+{
+  "name": "prometheus-sink-connector",
+  "config": {
+    "connector.class": "ru.practicum.connector.PrometheusSinkConnector",
+    "tasks.max": "1",
+    "topics": "metrics-topic",
+    "prometheus.listener.url": "http://localhost:8084/metrics",
+    "prometheus.listener.port": "8084",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false"
+  }
+}
